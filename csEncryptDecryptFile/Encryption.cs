@@ -1,107 +1,60 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 namespace csEncryptDecryptFile
 {
     class Encryption
     {
-        // TODO
-        // the current methods are from
-        // https://stackoverflow.com/questions/1629828/how-to-encrypt-a-string-in-net
-        public string EncryptString(string plainText)
+
+        //key and iv used for encryption and decryption
+        //dont really need to be created like this actually. could just randomgen it and 
+        //i think it could be created in the encrypt/decrypt methods themselves 
+        //but this simpler to test, so we'll go with this
+        //key is 32 bytes, iv is 16
+        public static string Key = "d8c83j2jskdkl4hd2jndkjh454fdfw09";
+        public static string IV = "4jdjwhsicnekal43";
+
+        public static string EncryptText(string text)
         {
-            // Instantiate a new RijndaelManaged object to perform string symmetric encryption
-            RijndaelManaged rijndaelCipher = new RijndaelManaged();
+            //array for text
+            byte[] normalText = System.Text.ASCIIEncoding.ASCII.GetBytes(text);
+            //create AES required info for encryption
+            //using AesCryptoServiceProvider class for cryptography
+            AesCryptoServiceProvider AES = new AesCryptoServiceProvider();
+            // these are standards for encryption...
+            //set bit sizes
+            AES.BlockSize = 128;
+            AES.KeySize = 256;
+            //set the key to key provided above. same with iv
+            //iv and key used for encryption. something abou proper security practices...
+            // iv = initialization vector. kinda like a header of the encrypted file.. i think
+            AES.Key = System.Text.ASCIIEncoding.ASCII.GetBytes(Key);
+            AES.IV = System.Text.ASCIIEncoding.ASCII.GetBytes(IV);
+            //cipher mode used for the encryption
+            //CBC = Cipher Block Chaining. there's other modes, but thisone is apparently better
+            AES.Mode = CipherMode.CBC;
+            //byte padding used to make sure the block size stays the same
+            //kinda like added white spaces to the rest of the file..
+            //also needed since we're using CBC
+            //PKCS7 is a style of padding
+            AES.Padding = PaddingMode.PKCS7;
 
-            // Set key and IV
-            rijndaelCipher.Key = Convert.FromBase64String("ABC");
-            rijndaelCipher.IV = Convert.FromBase64String("123");
+            //using the icryptotransform interface to create an encryptor object for...encryption
+            //empty values will create it's own key and iv using randomgen - could be worth doing if we want custom key/iv for every file
+            ICryptoTransform encryptor = AES.CreateEncryptor(AES.Key, AES.IV);
 
-            // Instantiate a new MemoryStream object to contain the encrypted bytes
-            MemoryStream memoryStream = new MemoryStream();
-
-            // Instantiate a new encryptor from our RijndaelManaged object
-            ICryptoTransform rijndaelEncryptor = rijndaelCipher.CreateEncryptor();
-
-            // Instantiate a new CryptoStream object to process the data and write it to the 
-            // memory stream
-            CryptoStream cryptoStream = new CryptoStream(memoryStream, rijndaelEncryptor, CryptoStreamMode.Write);
-
-            // Convert the plainText string into a byte array
-            byte[] plainBytes = Encoding.ASCII.GetBytes(plainText);
-
-            // Encrypt the input plaintext string
-            cryptoStream.Write(plainBytes, 0, plainBytes.Length);
-
-            // Complete the encryption process
-            cryptoStream.FlushFinalBlock();
-
-            // Convert the encrypted data from a MemoryStream to a byte array
-            byte[] cipherBytes = memoryStream.ToArray();
-
-            // Close both the MemoryStream and the CryptoStream
-            memoryStream.Close();
-            cryptoStream.Close();
-
-            // Convert the encrypted byte array to a base64 encoded string
-            string cipherText = Convert.ToBase64String(cipherBytes, 0, cipherBytes.Length);
-
-            // Return the encrypted data as a string
-            return cipherText;
-        }
-
-
-        public string DecryptString(string cipherText)
-        {
-            // Instantiate a new RijndaelManaged object to perform string symmetric encryption
-            RijndaelManaged rijndaelCipher = new RijndaelManaged();
-
-            // Set key and IV
-            rijndaelCipher.Key = Convert.FromBase64String("ABC");
-            rijndaelCipher.IV = Convert.FromBase64String("123");
-
-            // Instantiate a new MemoryStream object to contain the encrypted bytes
-            MemoryStream memoryStream = new MemoryStream();
-
-            // Instantiate a new encryptor from our RijndaelManaged object
-            ICryptoTransform rijndaelDecryptor = rijndaelCipher.CreateDecryptor();
-
-            // Instantiate a new CryptoStream object to process the data and write it to the 
-            // memory stream
-            CryptoStream cryptoStream = new CryptoStream(memoryStream, rijndaelDecryptor, CryptoStreamMode.Write);
-
-            // Will contain decrypted plaintext
-            string plainText = String.Empty;
-
-            try
-            {
-                // Convert the ciphertext string into a byte array
-                byte[] cipherBytes = Convert.FromBase64String(cipherText);
-
-                // Decrypt the input ciphertext string
-                cryptoStream.Write(cipherBytes, 0, cipherBytes.Length);
-
-                // Complete the decryption process
-                cryptoStream.FlushFinalBlock();
-
-                // Convert the decrypted data from a MemoryStream to a byte array
-                byte[] plainBytes = memoryStream.ToArray();
-
-                // Convert the encrypted byte array to a base64 encoded string
-                plainText = Encoding.ASCII.GetString(plainBytes, 0, plainBytes.Length);
-            }
-            finally
-            {
-                // Close both the MemoryStream and the CryptoStream
-                memoryStream.Close();
-                cryptoStream.Close();
-            }
-
-            // Return the encrypted data as a string
-            return plainText;
+            //finally actually encrypting using the cryptotransform interface transformfinalblock method
+            //takes in a byte array((our file)), the start and end of the array
+            byte[] encryptedFile = encryptor.TransformFinalBlock(normalText, 0, normalText.Length);
+            //using dispose method to... dispose of the encryptor object
+            //frees the object
+            encryptor.Dispose();
+            //needs a return so..
+            return Convert.ToBase64String(encryptedFile);
         }
     }
 }
