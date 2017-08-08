@@ -41,9 +41,9 @@ namespace csEncryptDecryptFile
             else
             {
                 //dataset and table adapter for connecting, retrieving, and updating from database
-                edproj ed = new edproj();
-                edprojTableAdapters.UserTableAdapter uAdapter =
-                    new edprojTableAdapters.UserTableAdapter();
+                edproj1 ed = new edproj1();
+                edproj1TableAdapters.UserTableAdapter uAdapter =
+                    new edproj1TableAdapters.UserTableAdapter();
 
                 //get info from table adaptors
                 uAdapter.Fill(ed.User);
@@ -80,11 +80,8 @@ namespace csEncryptDecryptFile
                 }
                 else
                 {
-                    MessageBox.Show("Registration Successful", "Success"
-                        , MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
                     //uRow contains new user info and will be used to update the real database
-                    edproj.UserRow uRow = ed.User.NewUserRow();
+                    edproj1.UserRow uRow = ed.User.NewUserRow();
                     uRow.Name = user.UserName;
                     uRow.Password = user.Password;
                     uRow.Email = user.Email;
@@ -93,6 +90,9 @@ namespace csEncryptDecryptFile
                     ed.User.Rows.Add(uRow);
                     //update the real database with the new row
                     uAdapter.Update(ed.User);
+
+                    MessageBox.Show("Registration Successful", "Success"
+                        , MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
             }
         }

@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 
 namespace csEncryptDecryptFile
 {
-    class Encryption
+    class Encrypt
     {
 
         //key and iv used for encryption and decryption
@@ -18,7 +18,7 @@ namespace csEncryptDecryptFile
         public static string Key = "d8c83j2jskdkl4hd2jndkjh454fdfw09";
         public static string IV = "4jdjwhsicnekal43";
 
-        public static string EncryptText(string text)
+        public static string EncryptText(string text, string salt)
         {
             //array for text
             byte[] normalText = System.Text.ASCIIEncoding.ASCII.GetBytes(text);

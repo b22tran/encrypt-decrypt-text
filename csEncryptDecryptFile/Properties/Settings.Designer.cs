@@ -32,5 +32,16 @@ namespace csEncryptDecryptFile.Properties {
                 return ((string)(this["edprojConnectionString"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=TALLTOP\\SQLEXPRESS;Initial Catalog=edproj;Persist Security Info=True;" +
+            "User ID=test;Password=test")]
+        public string edprojConnectionString1 {
+            get {
+                return ((string)(this["edprojConnectionString1"]));
+            }
+        }
     }
 }

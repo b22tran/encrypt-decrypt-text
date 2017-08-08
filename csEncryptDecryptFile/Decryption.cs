@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 
 namespace csEncryptDecryptFile
 {
-    class Decryption
+    class Decrypt
     {
 
         //key and iv used for encryption and decryption
@@ -16,15 +16,14 @@ namespace csEncryptDecryptFile
         //but this simpler to test, so we'll go with this
         //key is 32 bytes, iv is 16
         public static string Key = "d8c83j2jskdkl4hd2jndkjh454fdfw09";
-        public static string IV = "4jdjwhsicnekal43";
+        public static string IV = "4jdjwhsicnekal43";   // init vector
 
-        public static string DecryptText(string encryptedFile)
+        public static string DecryptText(string encryptedFile, string salt)
         {
             //converting text file to bytes using frombase64string (base64 is regular text...)
             try
             {
                 byte[] byteEncrypted = Convert.FromBase64String(encryptedFile);
-
 
                 //create AES required info for decryption
                 AesCryptoServiceProvider AES = new AesCryptoServiceProvider();
@@ -62,7 +61,7 @@ namespace csEncryptDecryptFile
             }
             catch (Exception e)
             {
-                return "Could not decrypt. File was corruptedor already decrypted.";
+                return "Could not decrypt. File was corrupted or already decrypted.";
             }
         }
     }

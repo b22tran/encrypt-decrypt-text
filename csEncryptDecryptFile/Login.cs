@@ -26,16 +26,16 @@ namespace csEncryptDecryptFile
             user.UserName = txtUsername.Text;
             user.Password = txtPassword.Text;
             bool result = false;
-
+            
             if (user.UserName == "" || user.Password == "")
             {
                 MessageBox.Show("No empty boxes","Error!",MessageBoxButtons.OK,MessageBoxIcon.Error);
             }
-
+            
             //create dataset and table adapter objects
-            edproj ed = new edproj();
-            edprojTableAdapters.UserTableAdapter uAdapter =
-                new edprojTableAdapters.UserTableAdapter();
+            edproj1 ed = new edproj1();
+            edproj1TableAdapters.UserTableAdapter uAdapter =
+                new edproj1TableAdapters.UserTableAdapter();
 
             //get info from table adaptors
             uAdapter.Fill(ed.User);
@@ -67,6 +67,10 @@ namespace csEncryptDecryptFile
                 MessageBox.Show("Login SuccessFul","Success!"
                     ,MessageBoxButtons.OK,MessageBoxIcon.Exclamation);
                 //transfer to next web form
+                Form1 f = new Form1();
+                this.Hide();
+                f.ShowDialog();
+
             }
             else
             {
@@ -85,5 +89,7 @@ namespace csEncryptDecryptFile
             this.Hide();
             r.ShowDialog();
         }
+
+
     }
 }
