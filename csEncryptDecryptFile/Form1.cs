@@ -22,10 +22,19 @@ namespace csEncryptDecryptFile
         //key is 32 bytes, iv is 16
         public static string Key = "d8c83j2jskdkl4hd2jndkjh454fdfw09";
         public static string IV = "4jdjwhsicnekal43";
+        private int userid;
 
-        public Form1()
+        public Form1(int user)
         {
             InitializeComponent();
+            this.userid = user;
+            rtbDisplayFile.Text = "Open a .txt file to either ENCRYPT or DECRYPT it's contents.\n\n"
+                                + "A password may be entered as a 'salt' allowing the text to be encrypted "
+                                + "with added security and the same password (that was used to encrypt) "
+                                +"must be entered when decrypting that text."
+                                ;
+            btnEncrypt.Enabled = false;
+            btnDecrypt.Enabled = false;
         }
 
         //button click method for choosing a file
@@ -41,7 +50,15 @@ namespace csEncryptDecryptFile
                     //also prints out to rich text box
                     tbFileName.Text = ofd.FileName;
                     using (StreamReader sr = new StreamReader(ofd.FileName))
+                    {
                         rtbDisplayFile.Text = await sr.ReadToEndAsync();
+                    }
+                    // record checksum
+                    //byte[] checksum = FileIO.getCheckSum(ofd.FileName);
+
+                    btnEncrypt.Enabled = true;
+                    btnDecrypt.Enabled = true;
+                    tbPassword.Text = "";
                 }
             }
         }
@@ -60,10 +77,13 @@ namespace csEncryptDecryptFile
                 //calls the encrypttext method
                 //probably wont work since this is just the filename to text
                 //need to actually get the text from the file and put it in here
-                rtbDisplayFile.Text = Encrypt.EncryptText(input);
+                rtbDisplayFile.Text = Encrypt.EncryptText(input, password);
+
+                btnEncrypt.Enabled = false;
+                btnDecrypt.Enabled = true;
+                tbPassword.Text = "";
+
                 
-
-
             }
         }
 
@@ -81,11 +101,14 @@ namespace csEncryptDecryptFile
                 //calls the decrypt method
                 //probably wont work since this is just the filename to text
                 //need to actually get the text from the file and put it in here
-                rtbDisplayFile.Text = Decrypt.DecryptText(input);
+                rtbDisplayFile.Text = Decrypt.DecryptText(input, password);
+
+                btnEncrypt.Enabled = true;
+                btnDecrypt.Enabled = false;
+                tbPassword.Text = "";
 
             }
         }
-
 
         private async void btnSave_Click(object sender, EventArgs e)
         {
@@ -105,20 +128,12 @@ namespace csEncryptDecryptFile
             }
         }
 
-
-        //oops
-        private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
-        {
-
-        }
-
         private void btnLogOut_Click(object sender, EventArgs e)
         {
             Login l = new Login();
             this.Hide();
             l.ShowDialog();
         }
-
     }
 }
 

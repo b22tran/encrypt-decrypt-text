@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -44,12 +45,10 @@ namespace csEncryptDecryptFile
                 edproj1 ed = new edproj1();
                 edproj1TableAdapters.UserTableAdapter uAdapter =
                     new edproj1TableAdapters.UserTableAdapter();
-
                 //get info from table adaptors
                 uAdapter.Fill(ed.User);
                 //dr contains all record from table (select * from user)
                 DataRow[] dr = ed.User.Select();
-
                 //loop through each record in the table and compare the usernames and passwords 
                 //to the user object's attributes
                 for (int i = 0; i < dr.Length; i++)
@@ -68,6 +67,17 @@ namespace csEncryptDecryptFile
                     {
                         result = true;
                     }
+                }
+                // validate email
+                try
+                {
+                    MailAddress m = new MailAddress(user.Email);
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("Invalid email!", "Error"
+                       , MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return ;
                 }
 
                 //if there is a match with usernames then an error is returned and user prompted again
@@ -90,7 +100,6 @@ namespace csEncryptDecryptFile
                     ed.User.Rows.Add(uRow);
                     //update the real database with the new row
                     uAdapter.Update(ed.User);
-
                     MessageBox.Show("Registration Successful", "Success"
                         , MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
@@ -106,5 +115,6 @@ namespace csEncryptDecryptFile
             this.Hide();
             l.ShowDialog();
         }
+
     }
 }

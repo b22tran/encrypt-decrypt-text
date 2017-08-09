@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -10,19 +11,30 @@ namespace csEncryptDecryptFile
 {
     class FileIO
     {
-        //TODO
-        // file validation
+        // checks hte checksum of the current file to database file
+        public bool verifyCheckSum(byte[] checksum, int userid){
+            //create dataset and table adapter objects
+            edproj1 ed = new edproj1();
+            edproj1TableAdapters.EncryptedTableAdapter uAdapter =
+                new edproj1TableAdapters.EncryptedTableAdapter();
 
-        //open file
+            // get info from table adaptors
+            uAdapter.Fill(ed.Encrypted);
+            // datarow for encrypted
+            DataRow[] dr = ed.Encrypted.Select();
 
-
-        //TODO
-        public bool verifyCheckSum(byte[] checksum, User user){
-            return false;
+            bool result = false;
+            if (checksum== (byte[])dr[userid]["FileHash"])
+            {
+                result = true;
+            }
+            return result;
         }
 
+
+
         // method that gets the checksum of the input file
-        public byte[] getCheckSum(String filename)
+        public static byte[] getCheckSum(String filename)
         {
             using (var md5 = MD5.Create())
             {

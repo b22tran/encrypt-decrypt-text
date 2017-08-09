@@ -41,17 +41,18 @@ namespace csEncryptDecryptFile
             uAdapter.Fill(ed.User);
 
             DataRow[] dr = ed.User.Select();
-
+            int userid = 0;
             //compare given username and password to every entry in the table
             for (int i = 0; i < dr.Length; i++)
             {
                 string dbUser = (string)dr[i]["Name"];
-                string dbPass = (string)dr[i]["Password"];
+               string dbPass = (string)dr[i]["Password"];
 
                 //compare the given username and password with the records in the table
                 if (user.validate(dbUser, dbPass))
                 {
                     result = true;
+                    userid = i;
                     break;
                 }
                 else
@@ -67,10 +68,9 @@ namespace csEncryptDecryptFile
                 MessageBox.Show("Login SuccessFul","Success!"
                     ,MessageBoxButtons.OK,MessageBoxIcon.Exclamation);
                 //transfer to next web form
-                Form1 f = new Form1();
+                Form1 f = new Form1(userid);
                 this.Hide();
                 f.ShowDialog();
-
             }
             else
             {

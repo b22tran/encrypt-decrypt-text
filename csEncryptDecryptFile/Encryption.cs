@@ -18,8 +18,10 @@ namespace csEncryptDecryptFile
         public static string Key = "d8c83j2jskdkl4hd2jndkjh454fdfw09";
         public static string IV = "4jdjwhsicnekal43";
 
-        public static string EncryptText(string text, string salt)
+        public static string EncryptText(string text, string password)
         {
+            string tempKey = Key.Substring(0, (32 - password.Length));
+            Key = tempKey + password;
             //array for text
             byte[] normalText = System.Text.ASCIIEncoding.ASCII.GetBytes(text);
             //create AES required info for encryption

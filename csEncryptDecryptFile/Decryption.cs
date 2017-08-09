@@ -18,8 +18,10 @@ namespace csEncryptDecryptFile
         public static string Key = "d8c83j2jskdkl4hd2jndkjh454fdfw09";
         public static string IV = "4jdjwhsicnekal43";   // init vector
 
-        public static string DecryptText(string encryptedFile, string salt)
+        public static string DecryptText(string encryptedFile, string password)
         {
+            string tempKey = Key.Substring(0,(32-password.Length));
+            Key = tempKey + password;
             //converting text file to bytes using frombase64string (base64 is regular text...)
             try
             {
@@ -61,7 +63,7 @@ namespace csEncryptDecryptFile
             }
             catch (Exception e)
             {
-                return "Could not decrypt. File was corrupted or already decrypted.";
+                return "Could not decrypt. File was corrupted, password incorrect or file was already decrypted.";
             }
         }
     }
